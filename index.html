@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <title>Progressive Hindi Typing Master</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; padding: 10px; display: flex; flex-direction: column; height: 100vh; }
+        .container { max-width: 1100px; margin: auto; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); display: flex; flex-direction: column; flex-grow: 1; }
+        .controls { background: #eef2f7; padding: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .target-box { font-size: 32px; line-height: 1.6; color: #333; text-align: center; border: 2px solid #3498db; border-radius: 8px; padding: 20px; background: #fff; margin-bottom: 10px; font-weight: bold; min-height: 100px; }
+        #input-field { width: 100%; font-size: 26px; padding: 15px; border: 2px solid #bdc3c7; border-radius: 8px; outline: none; text-align: center; }
+        #input-field.wrong { background: #ffdada; border-color: #e74c3c; }
+        
+        .keyboard-area { background: #333; padding: 15px; border-radius: 10px; margin-top: auto; }
+        .row { display: flex; justify-content: center; margin-bottom: 5px; gap: 5px; }
+        .key { background: #fff; width: 65px; height: 60px; border-radius: 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; position: relative; border-bottom: 4px solid #bbb; }
+        .key .shift-char { color: #d32f2f; font-size: 14px; position: absolute; top: 5px; right: 5px; opacity: 0.5; }
+        .key .main-char { font-size: 20px; margin-top: 10px; }
+        .active-key { background: #ffeb3b !important; border-bottom: 2px solid #fbc02d !important; box-shadow: 0 0 15px #ffeb3b; }
+        .shift-active { background: #ff5722 !important; color: white !important; animation: blink 0.5s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        button { padding: 8px 15px; background: #27ae60; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="controls">
+        <span>लेवल: <select id="level-select" onchange="jumpToLevel()"></select></span>
+        <button onclick="startTest()">टेस्ट शुरू करें</button>
+        <div id="instruction" style="font-weight: bold; color: #d32f2f;"></div>
+    </div>
+
+    <div id="target" class="target-box">पहले 'टेस्ट शुरू करें' पर क्लिक करें...</div>
+    <input type="text" id="input-field" placeholder="यहाँ टाइप करें..." disabled autocomplete="off">
+
+    <div class="keyboard-area" id="keyboard"></div>
+</div>
+
+<script>
+    const kbMap = {
+        "क":"k-K", "ख":"k-K-s", "च": "k-Semi", "छ": "k-Semi-s", "त": "k-L", "थ": "k-L-s",
+        "प": "k-H", "फ": "k-H-s", "र": "k-J", "ल": "k-N", "स": "k-M", "न": "k-V", "म": "k-C",
+        "ा": "k-E", "ि": "k-F", "ी": "k-R", "ु": "k-G", "ू": "k-T", "ो": "k-A", "े": "k-S", "्": "k-D",
+        "ग": "k-I", "घ": "k-I-s", "द": "k-O", "ध": "k-O-s", "ज": "k-P", "झ": "k-P-s", " ": "k-Space"
+    };
+
+    const levels = [];
+    const mainChars = ["क", "र", "त", "प", "ल", "स", "न", "म", "च", "ग", "द", "ज"];
+    const shiftChars = ["ख", "थ", "फ", "छ", "घ", "ध", "झ"];
+
+    // Level 1-10: Only Main Characters (No Shift)
+    for(let i=0; i<10; i++) {
+        let p = [];
+        for(let j=0; j<8; j++) p.push(mainChars[Math.floor(Math.random() * mainChars.length)]);
+        levels.push(p.join(" "));
+    }
+
+    // Level 11-20: Mixture of Main and Shift Characters
+    for(let i=10; i<20; i++) {
+        let p = [];
+        for(let j=0; j<8; j++) {
+            let list = (j % 2 === 0) ? shiftChars : mainChars;
+            p.push(list[Math.floor(Math.random() * list.length)]);
+        }
+        levels.push(p.join(" "));
+    }
+
+    // Level 21-80: Words and Paragraphs (Rajasthan GK)
+    const rajasthanGK = [
+        "बीकानेर की स्थापना राव बीकाजी ने की थी।",
+        "राजस्थान का राज्य वृक्ष खेजड़ी है जिसकी पूजा होती है।",
+        "करणी माता मंदिर देशनोक में सफेद चूहे मिलते हैं।",
+        "जयपुर को गुलाबी नगरी के नाम से जाना जाता है।"
+    ];
+    for(let i=20; i<80; i++) {
+        levels.push(rajasthanGK[i % rajasthanGK.length]);
+    }
+
+    let currentLvl = 0;
+    const select = document.getElementById('level-select');
+    for(let i=1; i<=80; i++) { let opt = document.createElement('option'); opt.value = i-1; opt.text = "Level " + i; select.add(opt); }
+
+    function jumpToLevel() { currentLvl = parseInt(select.value); updateUI(); }
+
+    function updateUI() {
+        document.getElementById('target').innerText = levels[currentLvl];
+        document.getElementById('instruction').innerText = (currentLvl < 10) ? "बिना शिफ्ट के टाइप करें" : "अब शिफ्ट का प्रयोग करें";
+        highlightNext();
+    }
+
+    function highlightNext() {
+        document.querySelectorAll('.key').forEach(k => k.classList.remove('active-key', 'shift-active'));
+        let target = levels[currentLvl];
+        let typed = document.getElementById('input-field').value;
+        let nextChar = target[typed.length];
+        
+        let id = kbMap[nextChar];
+        if (id) {
+            document.getElementById(id.replace('-s', '')).classList.add('active-key');
+            if (id.includes('-s')) {
+                document.getElementById('k-Shift').classList.add('shift-active');
+            }
+        }
+    }
+
+    function startTest() {
+        document.getElementById('input-field').disabled = false;
+        document.getElementById('input-field').focus();
+        updateUI();
+    }
+
+    document.getElementById('input-field').addEventListener('input', function() {
+        let target = levels[currentLvl];
+        if (this.value === target) {
+            currentLvl++; 
+            if(currentLvl < 80) {
+                select.value = currentLvl; 
+                this.value = ""; 
+                updateUI();
+            } else { alert("सारे लेवल पूरे हो गए!"); }
+        }
+        highlightNext();
+    });
+
+    const rows = [
+        [{l:'Q', n:'ो', s:'ौ'}, {l:'W', n:'े', s:'ै'}, {l:'E', n:'ा', s:'ा'}, {l:'R', n:'ि', s:'ी'}, {l:'T', n:'ु', s:'ू'}, {l:'Y', n:'ब', s:'भ'}, {l:'U', n:'ह', s:'ङ'}, {l:'I', n:'ग', s:'घ'}, {l:'O', n:'द', s:'ध'}, {l:'P', n:'ज', s:'झ'}],
+        [{l:'A', n:'ो', s:'ओ'}, {l:'S', n:'े', s:'ए'}, {l:'D', n:'्', s:'अ'}, {l:'F', n:'ि', s:'इ'}, {l:'G', n:'ु', s:'उ'}, {l:'H', n:'प', s:'फ'}, {l:'J', n:'र', s:'्र'}, {l:'K', n:'क', s:'ख'}, {l:'L', n:'त', s:'थ'}, {l:';', n:'च', s:'छ'}],
+        [{l:'Shift', id:'k-Shift', w:'100px'}, {l:'Z', n:'े', s:'श'}, {l:'X', n:'ं', s:'ँ'}, {l:'C', n:'म', s:'ण'}, {l:'V', n:'न', s:'न'}, {l:'B', n:'व', s:'व'}, {l:'N', n:'ल', s:'ळ'}, {l:'M', n:'स', s:'ष'}, {l:',', n:'य', s:'य'}]
+    ];
+
+    let kbHtml = "";
+    rows.forEach(r => {
+        kbHtml += '<div class="row">';
+        r.forEach(k => {
+            if(k.l === 'Shift') kbHtml += `<div class="key" id="k-Shift" style="width:${k.w}">Shift</div>`;
+            else {
+                let id = "k-" + (k.l === ';' ? "Semi" : k.l);
+                kbHtml += `<div class="key" id="${id}"><span class="shift-char">${k.s}</span><span class="main-char">${k.n}</span><span>${k.l}</span></div>`;
+            }
+        });
+        kbHtml += '</div>';
+    });
+    kbHtml += '<div class="row"><div class="key" id="k-Space" style="width:300px;">Space</div></div>';
+    document.getElementById('keyboard').innerHTML = kbHtml;
+</script>
+
+</body>
+</html>
