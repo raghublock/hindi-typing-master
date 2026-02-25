@@ -2,142 +2,200 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <title>Progressive Hindi Typing Master</title>
+    <title>Professional Hindi Typing Master</title>
     <style>
         * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; padding: 10px; display: flex; flex-direction: column; height: 100vh; }
-        .container { max-width: 1100px; margin: auto; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); display: flex; flex-direction: column; flex-grow: 1; }
-        .controls { background: #eef2f7; padding: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .target-box { font-size: 32px; line-height: 1.6; color: #333; text-align: center; border: 2px solid #3498db; border-radius: 8px; padding: 20px; background: #fff; margin-bottom: 10px; font-weight: bold; min-height: 100px; }
-        #input-field { width: 100%; font-size: 26px; padding: 15px; border: 2px solid #bdc3c7; border-radius: 8px; outline: none; text-align: center; }
-        #input-field.wrong { background: #ffdada; border-color: #e74c3c; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 10px; }
+        .container { max-width: 1150px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); min-height: 95vh; display: flex; flex-direction: column; }
         
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+        .tab-btn { padding: 12px 25px; border: none; background: #eee; cursor: pointer; font-weight: bold; border-radius: 5px; font-size: 16px; }
+        .tab-btn.active { background: #1a73e8; color: white; }
+
+        /* Page 1: Advanced Learning Section */
+        .trick-section { text-align: left; line-height: 1.6; }
+        .trick-card { background: #fff; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #e0e0e0; box-shadow: 2px 2px 10px rgba(0,0,0,0.05); }
+        .trick-card h3 { margin-top: 0; color: #1a73e8; border-bottom: 2px solid #e8f0fe; padding-bottom: 10px; }
+        .mnemonic { font-weight: bold; color: #d32f2f; background: #fff3f3; padding: 4px 8px; border-radius: 4px; border: 1px dashed #d32f2f; font-size: 1.1em; }
+        .finger-guide { color: #2e7d32; font-weight: 600; margin-top: 10px; display: block; }
+        .story { font-style: italic; color: #555; background: #f9f9f9; padding: 10px; border-radius: 5px; margin-top: 10px; border-left: 3px solid #ccc; }
+
+        /* Page 2: Practice */
+        #practice-page { display: none; flex-grow: 1; flex-direction: column; }
+        .controls { background: #2c3e50; color: white; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .stat-box { background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 5px; text-align: center; }
+        .display-section { border: 2px solid #3498db; border-radius: 8px; padding: 20px; background: #fff; margin-bottom: 10px; flex-grow: 1; overflow-y: auto; }
+        .target-box { font-size: 26px; line-height: 1.8; color: #333; text-align: justify; word-break: break-all; }
+        #input-field { width: 100%; font-size: 22px; padding: 15px; border: 2px solid #bdc3c7; border-radius: 8px; height: 120px; resize: none; margin-top: 10px; }
+        #input-field.wrong { background: #ffdada; border-color: #e74c3c; }
+
+        /* Keyboard */
         .keyboard-area { background: #333; padding: 15px; border-radius: 10px; margin-top: auto; }
         .row { display: flex; justify-content: center; margin-bottom: 5px; gap: 5px; }
-        .key { background: #fff; width: 65px; height: 60px; border-radius: 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; position: relative; border-bottom: 4px solid #bbb; }
-        .key .shift-char { color: #d32f2f; font-size: 14px; position: absolute; top: 5px; right: 5px; opacity: 0.5; }
-        .key .main-char { font-size: 20px; margin-top: 10px; }
-        .active-key { background: #ffeb3b !important; border-bottom: 2px solid #fbc02d !important; box-shadow: 0 0 15px #ffeb3b; }
-        .shift-active { background: #ff5722 !important; color: white !important; animation: blink 0.5s infinite; }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-        button { padding: 8px 15px; background: #27ae60; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .key { background: #fff; width: 60px; height: 55px; border-radius: 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: bold; position: relative; border-bottom: 4px solid #bbb; }
+        .key .shift-char { color: #d32f2f; font-size: 11px; position: absolute; top: 3px; right: 5px; }
+        .key .main-char { font-size: 19px; }
+        .key .eng-hint { font-size: 9px; color: #888; position: absolute; bottom: 2px; left: 4px; }
+        .active-key { background: #ffeb3b !important; transform: translateY(2px); box-shadow: 0 0 10px #ffeb3b; }
+        .shift-active { background: #ff5722 !important; color: white !important; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="controls">
-        <span>लेवल: <select id="level-select" onchange="jumpToLevel()"></select></span>
-        <button onclick="startTest()">टेस्ट शुरू करें</button>
-        <div id="instruction" style="font-weight: bold; color: #d32f2f;"></div>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showPage('learn')">📖 याद करने की ट्रिक्स</button>
+        <button class="tab-btn" onclick="showPage('practice')">⌨️ टाइपिंग प्रैक्टिस</button>
     </div>
 
-    <div id="target" class="target-box">पहले 'टेस्ट शुरू करें' पर क्लिक करें...</div>
-    <input type="text" id="input-field" placeholder="यहाँ टाइप करें..." disabled autocomplete="off">
+    <div id="learn-page" class="trick-section">
+        <h2 style="text-align: center; color: #1a73e8;">🎯 इनस्क्रिप्ट कीबोर्ड को याद करने की "शॉर्टकट कहानियाँ"</h2>
+        
+        <div class="trick-card">
+            <h3>🏠 होम रो (मध्य रेखा): "कल राजा तक पहुँचा"</h3>
+            <p>उंगलियां <b>ASDF</b> (मात्राएं) और <b>JKL;</b> (अक्षर) पर सेट करें।</p>
+            <p><span class="mnemonic">H J K L ;</span> ➡️ <span class="mnemonic">प र क त च</span></p>
+            <div class="story"><b>कहानी:</b> "<b>प</b>हले <b>र</b>ाजा <b>क</b>ल <b>त</b>क <b>च</b>ला गया।"</div>
+            <span class="finger-guide">👉 दायीं हाथ की उंगलियां यहीं रहेंगी।</span>
+        </div>
 
-    <div class="keyboard-area" id="keyboard"></div>
+        <div class="trick-card">
+            <h3>⬆️ अपर रो (ऊपरी रेखा): "बस ही गई देश की जय"</h3>
+            <p>जब आप ऊपर की लाइन पर उंगली ले जाएंगे:</p>
+            <p><span class="mnemonic">Y U I O P</span> ➡️ <span class="mnemonic">ब ह ग द ज</span></p>
+            <div class="story"><b>कहानी:</b> "<b>ब</b>स <b>ह</b>ी <b>ग</b>ई <b>द</b>ेश की <b>ज</b>य।"</div>
+        </div>
+
+        <div class="trick-card">
+            <h3>⬇️ लोअर रो (निचली रेखा): "मन लगाओ सब काम में"</h3>
+            <p>नीचे की लाइन के अक्षरों के लिए:</p>
+            <p><span class="mnemonic">C V B N M</span> ➡️ <span class="mnemonic">म न व ल स</span></p>
+            <div class="story"><b>कहानी:</b> "<b>म</b>न <b>न</b>हीं <b>व</b>िचलित, <b>ल</b>ो <b>स</b>फलता।"</div>
+        </div>
+
+        <div class="trick-card">
+            <h3>✋ बाएं हाथ का जादू (मात्राएं)</h3>
+            <p>बाएं हाथ की उंगलियां हमेशा मात्राओं पर रहती हैं:</p>
+            <p><span class="mnemonic">A S D F G</span> ➡️ <span class="mnemonic">ो े ् ि ु</span></p>
+            <div class="story"><b>याद रखें:</b> ओ, ए, हलंत, इ, उ (यह क्रम मात्राओं का शॉर्टकट है)। <b>D</b> बटन सबसे जरूरी है, यह अक्षरों को <b>आधा</b> करता है।</div>
+        </div>
+    </div>
+
+    <div id="practice-page">
+        <div class="controls">
+            <div class="stat-box">लेवल <select id="level-select" onchange="jumpToLevel()"></select></div>
+            <div class="stat-box">समय (मि.) <input type="number" id="timer-input" value="5" style="width:45px;"></div>
+            <button onclick="startTest()" style="background:#27ae60; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold;">शुरू करें</button>
+            <div class="stat-box">WPM: <span id="wpm-display" style="color:#f1c40f;">0</span></div>
+            <div class="stat-box">शेष: <span id="time-display" style="color:#f1c40f;">00:00</span></div>
+        </div>
+
+        <div class="display-section">
+            <div id="target" class="target-box">लेवल चुनें और 'शुरू करें' पर क्लिक करें...</div>
+            <textarea id="input-field" placeholder="टाइपिंग यहाँ करें..." disabled autocomplete="off"></textarea>
+        </div>
+
+        <div class="keyboard-area" id="keyboard"></div>
+    </div>
 </div>
 
 <script>
-    const kbMap = {
-        "क":"k-K", "ख":"k-K-s", "च": "k-Semi", "छ": "k-Semi-s", "त": "k-L", "थ": "k-L-s",
-        "प": "k-H", "फ": "k-H-s", "र": "k-J", "ल": "k-N", "स": "k-M", "न": "k-V", "म": "k-C",
-        "ा": "k-E", "ि": "k-F", "ी": "k-R", "ु": "k-G", "ू": "k-T", "ो": "k-A", "े": "k-S", "्": "k-D",
-        "ग": "k-I", "घ": "k-I-s", "द": "k-O", "ध": "k-O-s", "ज": "k-P", "झ": "k-P-s", " ": "k-Space"
-    };
+    const kbMap = { "क":"k-K", "र":"k-J", "त":"k-L", "च":"k-Semi", "प":"k-H", "ब":"k-Y", "ह":"k-U", "ग":"k-I", "द":"k-O", "ज":"k-P", "म":"k-C", "न":"k-V", "व":"k-B", "ल":"k-N", "स":"k-M", "ा":"k-E", "ि":"k-F", "ी":"k-R", "ु":"k-G", "ू":"k-T", "ो":"k-A", "े":"k-S", "्":"k-D", " ": "k-Space" };
 
     const levels = [];
-    const mainChars = ["क", "र", "त", "प", "ल", "स", "न", "म", "च", "ग", "द", "ज"];
-    const shiftChars = ["ख", "थ", "फ", "छ", "घ", "ध", "झ"];
-
-    // Level 1-10: Only Main Characters (No Shift)
-    for(let i=0; i<10; i++) {
-        let p = [];
-        for(let j=0; j<8; j++) p.push(mainChars[Math.floor(Math.random() * mainChars.length)]);
-        levels.push(p.join(" "));
-    }
-
-    // Level 11-20: Mixture of Main and Shift Characters
-    for(let i=10; i<20; i++) {
-        let p = [];
-        for(let j=0; j<8; j++) {
-            let list = (j % 2 === 0) ? shiftChars : mainChars;
-            p.push(list[Math.floor(Math.random() * list.length)]);
-        }
-        levels.push(p.join(" "));
-    }
-
-    // Level 21-80: Words and Paragraphs (Rajasthan GK)
-    const rajasthanGK = [
-        "बीकानेर की स्थापना राव बीकाजी ने की थी।",
-        "राजस्थान का राज्य वृक्ष खेजड़ी है जिसकी पूजा होती है।",
-        "करणी माता मंदिर देशनोक में सफेद चूहे मिलते हैं।",
-        "जयपुर को गुलाबी नगरी के नाम से जाना जाता है।"
+    const homeRow = ["क", "र", "त", "च", "प"];
+    const upperRow = ["ब", "ह", "ग", "द", "ज"];
+    const lowerRow = ["म", "न", "व", "ल", "स"];
+    const easyWords = ["कल", "पवन", "नमक", "जगत", "सरल", "मगर", "बदल", "शहर"];
+    
+    // पैराग्राफ डेटा 61-100 के लिए (विभिन्न विषयों पर)
+    const paraData = [
+        "राजस्थान भारत का क्षेत्रफल की दृष्टि से सबसे बड़ा राज्य है। इसकी पश्चिमी सीमा पाकिस्तान से लगती है। थार का मरुस्थल यहाँ की मुख्य भौगोलिक विशेषता है। बीकानेर शहर राव बीकाजी द्वारा बसाया गया था।",
+        "अरावली पर्वतमाला विश्व की सबसे प्राचीन पर्वत श्रेणियों में से एक है। यह राजस्थान को दो भागों में विभाजित करती है। माउंट आबू यहाँ का प्रसिद्ध हिल स्टेशन है जहाँ नक्की झील स्थित है।",
+        "बीकानेर की भुजिया और पापड़ पूरी दुनिया में प्रसिद्ध हैं। यहाँ का जूनागढ़ किला अपनी बेहतरीन नक्काशी के लिए जाना जाता है। करणी माता का मंदिर देशनोक में स्थित है जहाँ सफेद चूहे पवित्र माने जाते हैं।",
+        "महाराणा प्रताप ने मुगलों के विरुद्ध हल्दीघाटी के युद्ध में अदम्य साहस का परिचय दिया था। चेतक उनका सबसे वफादार घोड़ा था जिसने अपनी जान देकर प्रताप की रक्षा की थी।",
+        "जयपुर को गुलाबी नगरी के नाम से जाना जाता है। इसे सवाई जयसिंह द्वितीय ने बसाया था। हवा महल और आमेर का किला यहाँ के प्रमुख पर्यटन स्थल हैं जो विश्व धरोहर सूची में शामिल हैं।",
+        "कंप्यूटर आज के युग की अनिवार्य आवश्यकता बन गया है। सरकारी परीक्षाओं में टाइपिंग दक्षता का बहुत महत्व है। निरंतर अभ्यास से ही गति और शुद्धता प्राप्त की जा सकती है।",
+        "चित्तौड़गढ़ का किला राजस्थान के गौरव और बलिदान का प्रतीक है। रानी पद्मिनी का जौहर और पन्नाधाय का बलिदान यहाँ की मिट्टी में रचा-बसा है। विजय स्तंभ यहाँ की मुख्य पहचान है।",
+        "शिक्षा जीवन का आधार है। राजस्थान सरकार ने शिक्षा के क्षेत्र में अनेक कल्याणकारी योजनाएं चलाई हैं। REET और शिक्षक भर्ती परीक्षाएं युवाओं के लिए सुनहरे अवसर प्रदान करती हैं।",
+        "थार मरुस्थल में ऊँट को रेगिस्तान का जहाज कहा जाता है। मरु महोत्सव जैसलमेर में आयोजित होता है जहाँ ऊँटों की दौड़ और सांस्कृतिक कार्यक्रम आकर्षण का केंद्र होते हैं।",
+        "लूणी नदी पश्चिमी राजस्थान की सबसे महत्वपूर्ण नदी है। यह अजमेर के निकट नाग पहाड़ी से निकलती है। बाड़मेर के बालोतरा तक इसका पानी मीठा रहता है और फिर खारा हो जाता है।"
+        // कोड की लंबाई के कारण यहाँ संक्षिप्त उदाहरण हैं, नीचे लूप इसे 100 तक बढ़ा देगा।
     ];
-    for(let i=20; i<80; i++) {
-        levels.push(rajasthanGK[i % rajasthanGK.length]);
+    
+    for(let i=1; i<=100; i++) {
+        if(i <= 10) levels.push(Array(15).fill().map(() => homeRow[Math.floor(Math.random()*5)]).join(" "));
+        else if(i <= 20) levels.push(Array(15).fill().map(() => upperRow[Math.floor(Math.random()*5)]).join(" "));
+        else if(i <= 30) levels.push(Array(15).fill().map(() => lowerRow[Math.floor(Math.random()*5)]).join(" "));
+        else if(i <= 40) levels.push("ो े ् ि ु क र त प ल स न म".split(" ").sort(() => .5-Math.random()).join(" "));
+        else if(i <= 60) levels.push(Array(10).fill().map(() => easyWords[Math.floor(Math.random()*easyWords.length)]).join(" "));
+        else if(i <= 80) {
+            let p = paraData[i % paraData.length];
+            levels.push((p + " ").repeat(Math.ceil(500 / p.length))); // ~500 words
+        } else {
+            let p = paraData[i % paraData.length];
+            levels.push((p + " ").repeat(Math.ceil(1500 / p.length))); // ~1500 words
+        }
     }
 
-    let currentLvl = 0;
+    let currentLvl = 0, timerInterval, startTime, totalSecs;
+
+    function showPage(p) {
+        document.getElementById('learn-page').style.display = (p==='learn')?'block':'none';
+        document.getElementById('practice-page').style.display = (p==='practice')?'flex':'none';
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+    }
+
     const select = document.getElementById('level-select');
-    for(let i=1; i<=80; i++) { let opt = document.createElement('option'); opt.value = i-1; opt.text = "Level " + i; select.add(opt); }
+    for(let i=1; i<=100; i++) { let opt = document.createElement('option'); opt.value = i-1; opt.text = i; select.add(opt); }
 
     function jumpToLevel() { currentLvl = parseInt(select.value); updateUI(); }
 
-    function updateUI() {
-        document.getElementById('target').innerText = levels[currentLvl];
-        document.getElementById('instruction').innerText = (currentLvl < 10) ? "बिना शिफ्ट के टाइप करें" : "अब शिफ्ट का प्रयोग करें";
-        highlightNext();
-    }
-
-    function highlightNext() {
-        document.querySelectorAll('.key').forEach(k => k.classList.remove('active-key', 'shift-active'));
-        let target = levels[currentLvl];
-        let typed = document.getElementById('input-field').value;
-        let nextChar = target[typed.length];
-        
-        let id = kbMap[nextChar];
-        if (id) {
-            document.getElementById(id.replace('-s', '')).classList.add('active-key');
-            if (id.includes('-s')) {
-                document.getElementById('k-Shift').classList.add('shift-active');
-            }
-        }
-    }
-
     function startTest() {
+        totalSecs = document.getElementById('timer-input').value * 60;
         document.getElementById('input-field').disabled = false;
+        document.getElementById('input-field').value = "";
         document.getElementById('input-field').focus();
+        startTime = new Date();
         updateUI();
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            totalSecs--;
+            let m = Math.floor(totalSecs/60), s = totalSecs%60;
+            document.getElementById('time-display').innerText = `${m}:${s<10?'0'+s:s}`;
+            let w = document.getElementById('input-field').value.length / 5;
+            let timePassed = (new Date() - startTime) / 60000;
+            document.getElementById('wpm-display').innerText = Math.round(w/timePassed) || 0;
+            if(totalSecs <= 0) { clearInterval(timerInterval); document.getElementById('input-field').disabled = true; alert("समय समाप्त!"); }
+        }, 1000);
+    }
+
+    function updateUI() { document.getElementById('target').innerText = levels[currentLvl]; highlight(); }
+
+    function highlight() {
+        document.querySelectorAll('.key').forEach(k => k.classList.remove('active-key'));
+        let next = levels[currentLvl][document.getElementById('input-field').value.length];
+        let id = kbMap[next] || (next === " " ? "k-Space" : null);
+        if(id) document.getElementById(id).classList.add('active-key');
     }
 
     document.getElementById('input-field').addEventListener('input', function() {
-        let target = levels[currentLvl];
-        if (this.value === target) {
-            currentLvl++; 
-            if(currentLvl < 80) {
-                select.value = currentLvl; 
-                this.value = ""; 
-                updateUI();
-            } else { alert("सारे लेवल पूरे हो गए!"); }
-        }
-        highlightNext();
+        let t = levels[currentLvl];
+        if(this.value === t) { currentLvl++; select.value = currentLvl; this.value = ""; updateUI(); }
+        this.className = t.startsWith(this.value) ? "" : "wrong";
+        highlight();
     });
 
-    const rows = [
-        [{l:'Q', n:'ो', s:'ौ'}, {l:'W', n:'े', s:'ै'}, {l:'E', n:'ा', s:'ा'}, {l:'R', n:'ि', s:'ी'}, {l:'T', n:'ु', s:'ू'}, {l:'Y', n:'ब', s:'भ'}, {l:'U', n:'ह', s:'ङ'}, {l:'I', n:'ग', s:'घ'}, {l:'O', n:'द', s:'ध'}, {l:'P', n:'ज', s:'झ'}],
-        [{l:'A', n:'ो', s:'ओ'}, {l:'S', n:'े', s:'ए'}, {l:'D', n:'्', s:'अ'}, {l:'F', n:'ि', s:'इ'}, {l:'G', n:'ु', s:'उ'}, {l:'H', n:'प', s:'फ'}, {l:'J', n:'र', s:'्र'}, {l:'K', n:'क', s:'ख'}, {l:'L', n:'त', s:'थ'}, {l:';', n:'च', s:'छ'}],
-        [{l:'Shift', id:'k-Shift', w:'100px'}, {l:'Z', n:'े', s:'श'}, {l:'X', n:'ं', s:'ँ'}, {l:'C', n:'म', s:'ण'}, {l:'V', n:'न', s:'न'}, {l:'B', n:'व', s:'व'}, {l:'N', n:'ल', s:'ळ'}, {l:'M', n:'स', s:'ष'}, {l:',', n:'य', s:'य'}]
-    ];
-
+    const layout = [[{l:'Q',n:'ो',s:'ौ'},{l:'W',n:'े',s:'ै'},{l:'E',n:'ा',s:'ा'},{l:'R',n:'ि',s:'ी'},{l:'T',n:'ु',s:'ू'},{l:'Y',n:'ब',s:'भ'},{l:'U',n:'ह',s:'ङ'},{l:'I',n:'ग',s:'घ'},{l:'O',n:'द',s:'ध'},{l:'P',n:'ज',s:'झ'}],[{l:'A',n:'ो',s:'ओ'},{l:'S',n:'े',s:'ए'},{l:'D',n:'्',s:'अ'},{l:'F',n:'ि',s:'इ'},{l:'G',n:'ु',s:'उ'},{l:'H',n:'प',s:'फ'},{l:'J',n:'र',s:'्र'},{l:'K',n:'क',s:'ख'},{l:'L',n:'त',s:'थ'},{l:';',n:'च',s:'छ'}],[{l:'Shift',id:'k-Shift',w:'90px'},{l:'Z',n:'े',s:'श'},{l:'X',n:'ं',s:'ँ'},{l:'C',n:'म',s:'ण'},{l:'V',n:'न',s:'न'},{l:'B',n:'व',s:'व'},{l:'N',n:'ल',s:'ळ'},{l:'M',n:'स',s:'ष'},{l:',',n:'य',s:'य'}]];
     let kbHtml = "";
-    rows.forEach(r => {
+    layout.forEach(row => {
         kbHtml += '<div class="row">';
-        r.forEach(k => {
-            if(k.l === 'Shift') kbHtml += `<div class="key" id="k-Shift" style="width:${k.w}">Shift</div>`;
+        row.forEach(key => {
+            if(key.l === 'Shift') kbHtml += `<div class="key" id="k-Shift" style="width:${key.w}">Shift</div>`;
             else {
-                let id = "k-" + (k.l === ';' ? "Semi" : k.l);
-                kbHtml += `<div class="key" id="${id}"><span class="shift-char">${k.s}</span><span class="main-char">${k.n}</span><span>${k.l}</span></div>`;
+                let id = "k-" + (key.l === ';' ? "Semi" : key.l);
+                kbHtml += `<div class="key" id="${id}"><span class="shift-char">${key.s}</span><span class="main-char">${key.n}</span><span class="eng-hint">${key.l}</span></div>`;
             }
         });
         kbHtml += '</div>';
@@ -145,6 +203,5 @@
     kbHtml += '<div class="row"><div class="key" id="k-Space" style="width:300px;">Space</div></div>';
     document.getElementById('keyboard').innerHTML = kbHtml;
 </script>
-
 </body>
 </html>
